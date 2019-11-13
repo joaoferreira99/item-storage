@@ -80,7 +80,7 @@ public class ItemService implements IItemService {
 
 	@Override
 	public Item save(Item item) {
-		item.setState(EnumItemState.AVAILABLE);
+		item.setState(EnumItemState.AVAILABLE.name());
 		return itemRepository.save(item);
 	}
 

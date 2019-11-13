@@ -27,7 +27,7 @@ public class Item extends Auditable {
 	private Long itemUid;
 	@Column(unique = true)
 	private String name;
-	private EnumItemState state;
+	private String state;
 	private String description;
 	private String market;
 	private BigInteger stock;
