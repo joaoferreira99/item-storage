@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("items")
+@RequestMapping("/items")
 public class ItemController {
 
 	@Autowired
@@ -46,58 +46,28 @@ public class ItemController {
 
 	@PostMapping
 	@ServiceOperation("createItem")
-	public ResponseEntity<?> createItem(@RequestBody @Valid CreateItemRequestDto request) {
-		try {
-			Item item = mapper.map(request, Item.class);
-			return new ResponseEntity<>(mapper.map(itemService.save(item), CreateItemResponseDto.class), HttpStatus.CREATED);
-		} catch (DataIntegrityViolationException e) {
-			return new ResponseEntity<>(
-					ErrorMessage.builder().code(HttpStatus.CONFLICT.name()).operation(EnumOperation.CreateItem.name())
-							.message(e.getMessage()).build(), HttpStatus.CONFLICT);
-		}
+	public ResponseEntity<CreateItemResponseDto> createItem(@RequestBody @Valid CreateItemRequestDto request) {
+			return new ResponseEntity<>(mapper.map(itemService.save(mapper.map(request, Item.class)), CreateItemResponseDto.class), HttpStatus.CREATED);
 	}
 
 	@GetMapping("/{id}")
 	@ServiceOperation("getItem")
-	public ResponseEntity<?> getItem(@PathVariable("id") Long id) {
-		try {
-			Item item = itemService.get(id);
-			return new ResponseEntity<>(mapper.map(item, GetItemResponseDto.class), HttpStatus.OK);
-		} catch (EntityNotFoundException e) {
-			return new ResponseEntity<>(
-					ErrorMessage.builder().code(HttpStatus.NOT_FOUND.name()).operation(EnumOperation.GetItem.name())
-							.message(e.getMessage()).build(), HttpStatus.NOT_FOUND);
-		}
+	public ResponseEntity<GetItemResponseDto> getItem(@PathVariable("id") Long id) {
+			return new ResponseEntity<>(mapper.map(itemService.get(id), GetItemResponseDto.class), HttpStatus.OK);
 	}
 
 	@PatchMapping("/{id}")
 	@ServiceOperation("updateItem")
-	public ResponseEntity<?> updateItem(@PathVariable("id") Long id, @RequestBody Item item) {
+	public ResponseEntity<UpdateItemResponseDto> updateItem(@PathVariable("id") Long id, @RequestBody Item item) {
 		item.setItemUid(id);
-		try {
 			return new ResponseEntity<>(mapper.map(itemService.update(item), UpdateItemResponseDto.class), HttpStatus.OK);
-		} catch (EntityNotFoundException e) {
-			return new ResponseEntity<>(
-					ErrorMessage.builder().code(HttpStatus.NOT_FOUND.name()).operation(EnumOperation.UpdateItem.name())
-							.message(e.getMessage()).build(), HttpStatus.NOT_FOUND);
-		} catch (DataIntegrityViolationException e) {
-			return new ResponseEntity<>(
-					ErrorMessage.builder().code(HttpStatus.CONFLICT.name()).operation(EnumOperation.UpdateItem.name())
-							.message(e.getMessage()).build(), HttpStatus.CONFLICT);
-		}
 	}
 
 	@DeleteMapping("/{id}")
 	@ServiceOperation("deleteItem")
-	public ResponseEntity<?> deleteItem(@PathVariable("id") Long id) {
-		try {
+	public ResponseEntity<HttpStatus> deleteItem(@PathVariable("id") Long id) {
 			itemService.delete(id);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		} catch (EntityNotFoundException e) {
-			return new ResponseEntity<>(
-					ErrorMessage.builder().code(HttpStatus.NOT_FOUND.name()).operation(EnumOperation.DeleteItem.name())
-							.message(e.getMessage()).build(), HttpStatus.NOT_FOUND);
-		}
 	}
 
 	@GetMapping
@@ -109,30 +79,19 @@ public class ItemController {
 
 	@PostMapping("/{id}/dispatch")
 	@ServiceOperation("dispatchItem")
-	public ResponseEntity<?> dispatchItem(@PathVariable("id") Long id,
+	public ResponseEntity<HttpStatus> dispatchItem(@PathVariable("id") Long id,
 			@RequestBody DispatchItemRequestDto request) {
-		try {
 			itemService.dispatch(id, request.getQuantity());
 			return new ResponseEntity<>(HttpStatus.OK);
-		} catch (EntityNotFoundException e) {
-			return new ResponseEntity<>(
-					ErrorMessage.builder().code(HttpStatus.NOT_FOUND.name()).operation(EnumOperation.DispatchItem.name())
-							.message(e.getMessage()).build(), HttpStatus.NOT_FOUND);
-		}
+	
 	}
 
 	@PostMapping("/{id}/restock")
 	@ServiceOperation("restockItem")
-	public ResponseEntity<?> restockItem(@PathVariable("id") Long id,
+	public ResponseEntity<HttpStatus> restockItem(@PathVariable("id") Long id,
 			@RequestBody RestockItemRequestDto request) {
-		try {
 			itemService.restock(id, request.getQuantity());
 			return new ResponseEntity<>(HttpStatus.OK);
-		} catch (EntityNotFoundException e) {
-			return new ResponseEntity<>(
-					ErrorMessage.builder().code(HttpStatus.NOT_FOUND.name()).operation(EnumOperation.RestockItem.name())
-							.message(e.getMessage()).build(), HttpStatus.NOT_FOUND);
-		}
 	}
 
 }

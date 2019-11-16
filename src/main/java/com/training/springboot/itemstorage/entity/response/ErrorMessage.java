@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ErrorMessage {
 
+	private String traceId;
 	private String operation;
-	private String code;
+	private int code;
 	private String message;
 }

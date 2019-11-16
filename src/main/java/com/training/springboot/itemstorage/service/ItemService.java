@@ -4,6 +4,7 @@ import com.training.springboot.itemstorage.entity.model.Item;
 import com.training.springboot.itemstorage.entity.request.NotificationRequest;
 import com.training.springboot.itemstorage.enums.EnumEntity;
 import com.training.springboot.itemstorage.enums.EnumItemState;
+import com.training.springboot.itemstorage.error.EntityNotFoundException;
 import com.training.springboot.itemstorage.repository.ItemRepository;
 import com.training.springboot.itemstorage.utils.properties.ItemStorageProperties;
 
@@ -11,7 +12,6 @@ import static com.training.springboot.itemstorage.utils.constant.ItemStorageCons
 
 import java.math.BigInteger;
 import java.util.List;
-import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -49,8 +49,7 @@ public class ItemService implements IItemService {
 	@Override
 	public Item get(Long id) {
 		return itemRepository.findById(id).orElseThrow(() ->
-				new EntityNotFoundException((String.format(ENTITY_NOT_FOUND_MSG, EnumEntity.ITEM.name(), id))
-				));
+				new EntityNotFoundException(EnumEntity.ITEM.name(), id));
 	}
 
 	@Override
