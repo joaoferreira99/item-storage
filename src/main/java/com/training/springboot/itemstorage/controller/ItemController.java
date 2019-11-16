@@ -10,6 +10,8 @@ import com.training.springboot.itemstorage.entity.response.GetItemResponseDto;
 import com.training.springboot.itemstorage.entity.response.UpdateItemResponseDto;
 import com.training.springboot.itemstorage.enums.EnumOperation;
 import com.training.springboot.itemstorage.service.ItemService;
+import com.training.springboot.itemstorage.utils.annotation.ServiceOperation;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
@@ -43,6 +45,7 @@ public class ItemController {
 	private ModelMapper mapper;
 
 	@PostMapping
+	@ServiceOperation("createItem")
 	public ResponseEntity<?> createItem(@RequestBody @Valid CreateItemRequestDto request) {
 		try {
 			Item item = mapper.map(request, Item.class);
@@ -55,6 +58,7 @@ public class ItemController {
 	}
 
 	@GetMapping("/{id}")
+	@ServiceOperation("getItem")
 	public ResponseEntity<?> getItem(@PathVariable("id") Long id) {
 		try {
 			Item item = itemService.get(id);
@@ -67,6 +71,7 @@ public class ItemController {
 	}
 
 	@PatchMapping("/{id}")
+	@ServiceOperation("updateItem")
 	public ResponseEntity<?> updateItem(@PathVariable("id") Long id, @RequestBody Item item) {
 		item.setItemUid(id);
 		try {
@@ -83,6 +88,7 @@ public class ItemController {
 	}
 
 	@DeleteMapping("/{id}")
+	@ServiceOperation("deleteItem")
 	public ResponseEntity<?> deleteItem(@PathVariable("id") Long id) {
 		try {
 			itemService.delete(id);
@@ -95,13 +101,15 @@ public class ItemController {
 	}
 
 	@GetMapping
+	@ServiceOperation("listItems")
 	public ResponseEntity<List<GetItemResponseDto>> listItems() {
 		return new ResponseEntity<>(itemService.list().stream().map(i -> mapper.map(i, GetItemResponseDto.class)).collect(
 				Collectors.toList()), HttpStatus.OK);
 	}
 
 	@PostMapping("/{id}/dispatch")
-	public ResponseEntity<?> stockItem(@PathVariable("id") Long id,
+	@ServiceOperation("dispatchItem")
+	public ResponseEntity<?> dispatchItem(@PathVariable("id") Long id,
 			@RequestBody DispatchItemRequestDto request) {
 		try {
 			itemService.dispatch(id, request.getQuantity());
@@ -114,7 +122,8 @@ public class ItemController {
 	}
 
 	@PostMapping("/{id}/restock")
-	public ResponseEntity<?> dispatchItem(@PathVariable("id") Long id,
+	@ServiceOperation("restockItem")
+	public ResponseEntity<?> restockItem(@PathVariable("id") Long id,
 			@RequestBody RestockItemRequestDto request) {
 		try {
 			itemService.restock(id, request.getQuantity());

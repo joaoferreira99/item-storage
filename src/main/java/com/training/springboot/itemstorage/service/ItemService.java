@@ -1,13 +1,14 @@
 package com.training.springboot.itemstorage.service;
 
-import static com.training.springboot.itemstorage.utils.ItemStorageConstants.ENTITY_NOT_FOUND_MSG;
-
 import com.training.springboot.itemstorage.entity.model.Item;
 import com.training.springboot.itemstorage.entity.request.NotificationRequest;
 import com.training.springboot.itemstorage.enums.EnumEntity;
 import com.training.springboot.itemstorage.enums.EnumItemState;
 import com.training.springboot.itemstorage.repository.ItemRepository;
-import com.training.springboot.itemstorage.utils.ItemStorageProperties;
+import com.training.springboot.itemstorage.utils.properties.ItemStorageProperties;
+
+import static com.training.springboot.itemstorage.utils.constant.ItemStorageConstant.ENTITY_NOT_FOUND_MSG;
+
 import java.math.BigInteger;
 import java.util.List;
 import javax.persistence.EntityNotFoundException;

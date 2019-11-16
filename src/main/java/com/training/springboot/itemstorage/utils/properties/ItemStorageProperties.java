@@ -1,4 +1,5 @@
-package com.training.springboot.itemstorage.utils;
+package com.training.springboot.itemstorage.utils.properties;
+
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
