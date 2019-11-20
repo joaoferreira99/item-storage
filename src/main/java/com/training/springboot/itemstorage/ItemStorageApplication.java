@@ -2,13 +2,14 @@ package com.training.springboot.itemstorage;
 
 import com.training.springboot.itemstorage.utils.filter.LoggingHandler;
 import com.training.springboot.itemstorage.utils.filter.MdcInitHandler;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+@EnableDiscoveryClient
 @SpringBootApplication
 public class ItemStorageApplication {
 

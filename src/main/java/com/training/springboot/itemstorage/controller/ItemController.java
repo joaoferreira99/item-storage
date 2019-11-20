@@ -5,20 +5,16 @@ import com.training.springboot.itemstorage.entity.request.CreateItemRequestDto;
 import com.training.springboot.itemstorage.entity.request.DispatchItemRequestDto;
 import com.training.springboot.itemstorage.entity.request.RestockItemRequestDto;
 import com.training.springboot.itemstorage.entity.response.CreateItemResponseDto;
-import com.training.springboot.itemstorage.entity.response.ErrorMessage;
 import com.training.springboot.itemstorage.entity.response.GetItemResponseDto;
 import com.training.springboot.itemstorage.entity.response.UpdateItemResponseDto;
-import com.training.springboot.itemstorage.enums.EnumOperation;
 import com.training.springboot.itemstorage.service.ItemService;
 import com.training.springboot.itemstorage.utils.annotation.ServiceOperation;
-
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,9 +26,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@RefreshScope
 @RestController
 @RequestMapping("/items")
-public class ItemController {
+public class ItemController implements IItemController {
 
 	@Autowired
 	private ItemService itemService;
@@ -44,18 +41,21 @@ public class ItemController {
 	@Autowired
 	private ModelMapper mapper;
 
+	@Override
 	@PostMapping
 	@ServiceOperation("createItem")
 	public ResponseEntity<CreateItemResponseDto> createItem(@RequestBody @Valid CreateItemRequestDto request) {
 			return new ResponseEntity<>(mapper.map(itemService.save(mapper.map(request, Item.class)), CreateItemResponseDto.class), HttpStatus.CREATED);
 	}
 
+	@Override
 	@GetMapping("/{id}")
 	@ServiceOperation("getItem")
 	public ResponseEntity<GetItemResponseDto> getItem(@PathVariable("id") Long id) {
 			return new ResponseEntity<>(mapper.map(itemService.get(id), GetItemResponseDto.class), HttpStatus.OK);
 	}
 
+	@Override
 	@PatchMapping("/{id}")
 	@ServiceOperation("updateItem")
 	public ResponseEntity<UpdateItemResponseDto> updateItem(@PathVariable("id") Long id, @RequestBody Item item) {
@@ -63,6 +63,7 @@ public class ItemController {
 			return new ResponseEntity<>(mapper.map(itemService.update(item), UpdateItemResponseDto.class), HttpStatus.OK);
 	}
 
+	@Override
 	@DeleteMapping("/{id}")
 	@ServiceOperation("deleteItem")
 	public ResponseEntity<HttpStatus> deleteItem(@PathVariable("id") Long id) {
@@ -70,6 +71,7 @@ public class ItemController {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
+	@Override
 	@GetMapping
 	@ServiceOperation("listItems")
 	public ResponseEntity<List<GetItemResponseDto>> listItems() {
@@ -77,6 +79,7 @@ public class ItemController {
 				Collectors.toList()), HttpStatus.OK);
 	}
 
+	@Override
 	@PostMapping("/{id}/dispatch")
 	@ServiceOperation("dispatchItem")
 	public ResponseEntity<HttpStatus> dispatchItem(@PathVariable("id") Long id,
@@ -86,6 +89,7 @@ public class ItemController {
 	
 	}
 
+	@Override
 	@PostMapping("/{id}/restock")
 	@ServiceOperation("restockItem")
 	public ResponseEntity<HttpStatus> restockItem(@PathVariable("id") Long id,
