@@ -7,9 +7,6 @@ import com.training.springboot.itemstorage.enums.EnumItemState;
 import com.training.springboot.itemstorage.error.EntityNotFoundException;
 import com.training.springboot.itemstorage.repository.ItemRepository;
 import com.training.springboot.itemstorage.utils.properties.ItemStorageProperties;
-
-import static com.training.springboot.itemstorage.utils.constant.ItemStorageConstant.ENTITY_NOT_FOUND_MSG;
-
 import java.math.BigInteger;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
