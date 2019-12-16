@@ -2,7 +2,7 @@ package com.training.springboot.itemstorage.utils.constant;
 
 public class ItemStorageConstant {
 
-		/**
+	/**
 	 * MDC Constants
 	 */
 	public static final String TRACE_ID = "trace-id";

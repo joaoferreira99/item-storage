@@ -14,7 +14,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Slf4j
 @Component
-public class LoggingInterceptor implements HandlerInterceptor {
+public class LoggingHandler implements HandlerInterceptor {
 
 	StopWatch stopWatch;
 

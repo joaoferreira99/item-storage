@@ -8,6 +8,7 @@ import com.training.springboot.itemstorage.entity.response.CreateItemResponseDto
 import com.training.springboot.itemstorage.entity.response.GetItemResponseDto;
 import com.training.springboot.itemstorage.entity.response.UpdateItemResponseDto;
 import com.training.springboot.itemstorage.service.ItemService;
+import com.training.springboot.itemstorage.utils.annotation.ServiceOperation;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -29,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("/items")
-public class ItemController  {
+public class ItemController {
 
 	@Autowired
 	private ItemService itemService;
@@ -41,48 +42,56 @@ public class ItemController  {
 	@Autowired
 	private ModelMapper mapper;
 
+	@ServiceOperation("createItem")
 	@PostMapping
 	public ResponseEntity<CreateItemResponseDto> createItem(@RequestBody @Valid CreateItemRequestDto request) {
-			return new ResponseEntity<>(mapper.map(itemService.save(mapper.map(request, Item.class)), CreateItemResponseDto.class), HttpStatus.CREATED);
+		return new ResponseEntity<>(
+				mapper.map(itemService.save(mapper.map(request, Item.class)), CreateItemResponseDto.class), HttpStatus.CREATED);
 	}
 
+	@ServiceOperation("getItem")
 	@GetMapping("/{id}")
 	public ResponseEntity<GetItemResponseDto> getItem(@PathVariable("id") Long id) {
 		log.info("Received request {}", id);
-			return new ResponseEntity<>(mapper.map(itemService.get(id), GetItemResponseDto.class), HttpStatus.OK);
+		return new ResponseEntity<>(mapper.map(itemService.get(id), GetItemResponseDto.class), HttpStatus.OK);
 	}
 
+	@ServiceOperation("updateItem")
 	@PatchMapping("/{id}")
 	public ResponseEntity<UpdateItemResponseDto> updateItem(@PathVariable("id") Long id, @RequestBody Item item) {
 		item.setItemUid(id);
-			return new ResponseEntity<>(mapper.map(itemService.update(item), UpdateItemResponseDto.class), HttpStatus.OK);
+		return new ResponseEntity<>(mapper.map(itemService.update(item), UpdateItemResponseDto.class), HttpStatus.OK);
 	}
 
+	@ServiceOperation("deleteItem")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<HttpStatus> deleteItem(@PathVariable("id") Long id) {
-			itemService.delete(id);
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		itemService.delete(id);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
+	@ServiceOperation("listItems")
 	@GetMapping
 	public ResponseEntity<List<GetItemResponseDto>> listItems() {
 		return new ResponseEntity<>(itemService.list().stream().map(i -> mapper.map(i, GetItemResponseDto.class)).collect(
 				Collectors.toList()), HttpStatus.OK);
 	}
 
+	@ServiceOperation("dispatchItem")
 	@PostMapping("/{id}/dispatch")
 	public ResponseEntity<HttpStatus> dispatchItem(@PathVariable("id") Long id,
 			@RequestBody DispatchItemRequestDto request) {
-			itemService.dispatch(id, request.getQuantity());
-			return new ResponseEntity<>(HttpStatus.OK);
-	
+		itemService.dispatch(id, request.getQuantity());
+		return new ResponseEntity<>(HttpStatus.OK);
+
 	}
 
+	@ServiceOperation("restockItem")
 	@PostMapping("/{id}/restock")
 	public ResponseEntity<HttpStatus> restockItem(@PathVariable("id") Long id,
 			@RequestBody RestockItemRequestDto request) {
-			itemService.restock(id, request.getQuantity());
-			return new ResponseEntity<>(HttpStatus.OK);
+		itemService.restock(id, request.getQuantity());
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 }
