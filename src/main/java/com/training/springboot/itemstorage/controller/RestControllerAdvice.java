@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class ErrorHandlerController {
+public class RestControllerAdvice {
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorMessage> handleInternalError(Exception e) {
