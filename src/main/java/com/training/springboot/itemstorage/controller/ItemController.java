@@ -11,6 +11,7 @@ import com.training.springboot.itemstorage.service.ItemService;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,10 +27,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/items")
+@RequiredArgsConstructor
 public class ItemController  {
 
-	@Autowired
-	private ItemService itemService;
+	private final ItemService itemService;
 
 	/**
 	 * @JavaDoc ModelMapper is a mapping tool easily configurable to accommodate most application defined entities check
