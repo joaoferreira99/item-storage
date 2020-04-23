@@ -55,7 +55,7 @@ public class ItemController {
 	@PatchMapping("/{id}")
 	public ResponseEntity<UpdateItemResponseDto> updateItem(@PathVariable("id") Long id,
 			@RequestBody UpdateItemRequestDto request) {
-		Item item = mapper.map(request, UpdateItemRequestDto.class);
+		Item item = mapper.map(request, Item.class);
 		//TODO Update item (use service)
 		UpdateItemResponseDto responseDto = mapper.map(persistedItem, UpdateItemResponseDto.class);
 		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
