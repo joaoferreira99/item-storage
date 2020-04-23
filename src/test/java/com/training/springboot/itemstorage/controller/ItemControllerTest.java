@@ -6,52 +6,52 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.google.common.io.Resources;
 import com.training.springboot.itemstorage.entity.model.Item;
 import com.training.springboot.itemstorage.enums.EnumItemState;
 import com.training.springboot.itemstorage.service.ItemService;
 import com.training.springboot.itemstorage.utils.interceptor.LoggingHandler;
 import com.training.springboot.itemstorage.utils.interceptor.MdcInitHandler;
+import java.io.FileReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.net.URL;
-import java.nio.charset.Charset;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.FileCopyUtils;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class ItemControllerTest {
 
+	private static Long ITEM_UID = 1l;
 	@Autowired
 	private ItemController itemController;
-
 	@Autowired
 	private RestControllerAdvice restControllerAdvice;
-
 	@Autowired
 	private MdcInitHandler mdcInitHandler;
-
 	@Autowired
 	private LoggingHandler loggingHandler;
-
+	@Value("classpath:samples/requests/createItemWhenValidReturn200Ok.json")
+	private Resource createItemWhenValidReturn200OkRequest;
+	@Value("classpath:samples/responses/createItemWhenValidReturn200Ok.json")
+	private Resource createItemWhenValidReturn200OkResponse;
 	@MockBean
 	private ItemService itemService;
-
 	private MockMvc mockMvc;
-
-	private static Long ITEM_UID = 1l;
 
 	@Before
 	public void setUp() {
+
 		mockMvc = MockMvcBuilders.standaloneSetup(itemController)
 				.setControllerAdvice(restControllerAdvice)
 				.addInterceptors(mdcInitHandler,
@@ -61,14 +61,6 @@ public class ItemControllerTest {
 
 	@Test
 	public void createItem() throws Exception {
-
-		Item item = Item.builder()
-				.name("Item1")
-				.description("description")
-				.market("PT")
-				.priceTag(BigDecimal.TEN)
-				.stock(BigInteger.ONE)
-				.build();
 
 		Item persistedItem = Item.builder()
 				.itemUid(ITEM_UID)
@@ -81,19 +73,13 @@ public class ItemControllerTest {
 
 		when(itemService.save(any(Item.class))).thenReturn(persistedItem);
 
-		URL url = Resources.getResource("samples/requests/createItemWhenValidReturn200Ok.json");
+		String requestContent = FileCopyUtils.copyToString(new FileReader(createItemWhenValidReturn200OkRequest.getFile()));
 
 		mockMvc.perform(post("/items")
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
-/*				.content("{\n"
-						+ "  \"name\":\"Item1\",\n"
-						+ "  \"description\": \"description\",\n"
-						+ "  \"priceTag\": 10.0,\n"
-						+ "  \"stock\": 10,\n"
-						+ "  \"market\": \"PT\"\n"
-						+ "}"))*/
-				.content(Resources.toString(url, Charset.defaultCharset())))
+				.content(requestContent)
+		)
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.itemUid").value(ITEM_UID));
 

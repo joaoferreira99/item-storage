@@ -4,17 +4,18 @@ import com.training.springboot.itemstorage.entity.model.Item;
 import com.training.springboot.itemstorage.entity.request.CreateItemRequestDto;
 import com.training.springboot.itemstorage.entity.request.DispatchItemRequestDto;
 import com.training.springboot.itemstorage.entity.request.RestockItemRequestDto;
+import com.training.springboot.itemstorage.entity.request.UpdateItemRequestDto;
 import com.training.springboot.itemstorage.entity.response.CreateItemResponseDto;
 import com.training.springboot.itemstorage.entity.response.GetItemResponseDto;
 import com.training.springboot.itemstorage.entity.response.UpdateItemResponseDto;
 import com.training.springboot.itemstorage.service.ItemService;
 import com.training.springboot.itemstorage.utils.annotation.ServiceOperation;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,52 +30,59 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/items")
 public class ItemController {
 
-	@Autowired
-	private ItemService itemService;
+	private final ItemService itemService;
 
 	/**
 	 * @JavaDoc ModelMapper is a mapping tool easily configurable to accommodate most application defined entities check
 	 * some configuration example at: http://modelmapper.org/user-manual/
 	 */
-	@Autowired
-	private ModelMapper mapper;
+	private final ModelMapper mapper;
 
 	@ServiceOperation("createItem")
 	@PostMapping
 	public ResponseEntity<CreateItemResponseDto> createItem(@RequestBody @Valid CreateItemRequestDto request) {
-		return new ResponseEntity<>(
-				mapper.map(itemService.save(mapper.map(request, Item.class)), CreateItemResponseDto.class), HttpStatus.CREATED);
+		Item item = mapper.map(request, Item.class);
+		Item persistedItem = itemService.save(item);
+		CreateItemResponseDto responseDto = mapper.map(persistedItem, CreateItemResponseDto.class);
+		return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
 	}
 
 	@ServiceOperation("getItem")
 	@GetMapping("/{id}")
 	public ResponseEntity<GetItemResponseDto> getItem(@PathVariable("id") Long id) {
-		log.info("Received request {}", id);
-		return new ResponseEntity<>(mapper.map(itemService.get(id), GetItemResponseDto.class), HttpStatus.OK);
+		Item item = itemService.get(id);
+		GetItemResponseDto responseDto = mapper.map(item, GetItemResponseDto.class);
+		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
 	}
 
 	@ServiceOperation("updateItem")
 	@PatchMapping("/{id}")
-	public ResponseEntity<UpdateItemResponseDto> updateItem(@PathVariable("id") Long id, @RequestBody Item item) {
-		item.setItemUid(id);
-		return new ResponseEntity<>(mapper.map(itemService.update(item), UpdateItemResponseDto.class), HttpStatus.OK);
+	public ResponseEntity<UpdateItemResponseDto> updateItem(@PathVariable("id") Long id,
+			@RequestBody UpdateItemRequestDto request) {
+		Item item = mapper.map(request, Item.class);
+		Item persistedItem = itemService.save(item);
+		UpdateItemResponseDto responseDto = mapper.map(persistedItem, UpdateItemResponseDto.class);
+		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
 	}
 
 	@ServiceOperation("deleteItem")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<HttpStatus> deleteItem(@PathVariable("id") Long id) {
 		itemService.delete(id);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		return ResponseEntity.noContent().build();
 	}
 
 	@ServiceOperation("listItems")
 	@GetMapping
 	public ResponseEntity<List<GetItemResponseDto>> listItems() {
-		return new ResponseEntity<>(itemService.list().stream().map(i -> mapper.map(i, GetItemResponseDto.class)).collect(
-				Collectors.toList()), HttpStatus.OK);
+		List<GetItemResponseDto> responseDtoList = new ArrayList<>();
+		List<Item> itemList = itemService.list();
+		itemList.forEach(item -> responseDtoList.add(mapper.map(item, GetItemResponseDto.class)));
+		return ResponseEntity.status(HttpStatus.OK).body(responseDtoList);
 	}
 
 	@ServiceOperation("dispatchItem")
@@ -82,8 +90,7 @@ public class ItemController {
 	public ResponseEntity<HttpStatus> dispatchItem(@PathVariable("id") Long id,
 			@RequestBody DispatchItemRequestDto request) {
 		itemService.dispatch(id, request.getQuantity());
-		return new ResponseEntity<>(HttpStatus.OK);
-
+		return ResponseEntity.ok().build();
 	}
 
 	@ServiceOperation("restockItem")
@@ -91,7 +98,7 @@ public class ItemController {
 	public ResponseEntity<HttpStatus> restockItem(@PathVariable("id") Long id,
 			@RequestBody RestockItemRequestDto request) {
 		itemService.restock(id, request.getQuantity());
-		return new ResponseEntity<>(HttpStatus.OK);
+		return ResponseEntity.ok().build();
 	}
 
 }

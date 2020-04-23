@@ -1,0 +1,11 @@
+version: "3.6"
+services:
+  # JDBC Connection: jdbc:mysql://localhost:3306/myDb?createDatabaseIfNotExist=true
+  # username: root
+  # password: password
+  mysql-prod:
+    image: mysql:5.7
+    ports:
+    - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: password
