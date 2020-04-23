@@ -61,27 +61,9 @@ public class ItemControllerTest {
 
 	@Test
 	public void createItem() throws Exception {
-
-		Item persistedItem = Item.builder()
-				.itemUid(ITEM_UID)
-				.name("Item1")
-				.description("description")
-				.state(EnumItemState.AVAILABLE.name())
-				.market("PT")
-				.priceTag(BigDecimal.TEN)
-				.stock(BigInteger.ONE).build();
-
-		when(itemService.save(any(Item.class))).thenReturn(persistedItem);
-
-		String requestContent = FileCopyUtils.copyToString(new FileReader(createItemWhenValidReturn200OkRequest.getFile()));
-
-		mockMvc.perform(post("/items")
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(requestContent)
-		)
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.itemUid").value(ITEM_UID));
-
+		// TODO: Complete having in mind the AAA approach
+		// Arrange - Prepare variables and mock responses
+		// Act - Behaviour to test
+		// Assert - Verify that all criterias are met
 	}
 }

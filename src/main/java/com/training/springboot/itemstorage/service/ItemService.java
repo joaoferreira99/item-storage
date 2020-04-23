@@ -9,20 +9,19 @@ import com.training.springboot.itemstorage.repository.ItemRepository;
 import com.training.springboot.itemstorage.utils.properties.ItemStorageProperties;
 import java.math.BigInteger;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
+@RequiredArgsConstructor
 @Service
 public class ItemService implements IItemService {
 
-	@Autowired
-	private ItemRepository itemRepository;
+	private final ItemRepository itemRepository;
 
-	@Autowired
-	private ItemStorageProperties itemStorageProperties;
+	private final ItemStorageProperties itemStorageProperties;
 
 	/**
 	 * @JavaDoc RestTemplate is a synchronous Http Client which is supported by Pivotal development team take into
@@ -30,8 +29,7 @@ public class ItemService implements IItemService {
 	 * WebClient which is capable of synchronous & asynchronous invocations check some code samples at:
 	 * https://spring.io/guides/gs/consuming-rest/
 	 */
-	@Autowired
-	private RestTemplate restTemplate;
+	private final RestTemplate restTemplate;
 
 	@Override
 	public Page<Item> list(int size, int page) {

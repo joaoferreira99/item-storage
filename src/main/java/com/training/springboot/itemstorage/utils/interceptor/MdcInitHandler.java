@@ -18,13 +18,10 @@ public class MdcInitHandler implements HandlerInterceptor {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-		MDC.put(ItemStorageConstant.TRACE_ID,
-				Optional.ofNullable(request.getHeader(TRACE_ID_HEADER)).orElse(UUID.randomUUID().toString()));
+		// TODO: Add TRACE_ID to the logs using the MDC (Mapped Diagnostic Context)
 		if (handler.getClass().isAssignableFrom(HandlerMethod.class)) {
 			HandlerMethod handlerMethod = (HandlerMethod) handler;
-			ServiceOperation serviceOperationAnnotation = handlerMethod.getMethodAnnotation(ServiceOperation.class);
-			MDC.put(ItemStorageConstant.OPERATION, serviceOperationAnnotation.value());
-			return true;
+			// TODO: Add OPERATION to the logs using the MDC (Mapped Diagnostic Context). HINT: you can retrieve information in the annotation ServiceOperation
 		}
 		return true;
 	}

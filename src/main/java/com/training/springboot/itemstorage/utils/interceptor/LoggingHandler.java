@@ -16,23 +16,29 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Component
 public class LoggingHandler implements HandlerInterceptor {
 
-	StopWatch stopWatch;
+	// Use this to start and stop a timer, and log that information.
+	private StopWatch stopWatch;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-		log.info(
-				String.format(ItemStorageConstant.LOGGING_HANDLER_INBOUND_MSG, request.getMethod(), request.getRequestURI(),
-						Instant.now()));
-		stopWatch = new StopWatch();
-		stopWatch.start();
+		/**
+		 * TODO: Start the watch and log request as an INFO using the format specified in ItemStorageConstant.LOGGING_HANDLER_INBOUND_MSG
+		 * 	example: Received HTTP [POST] Request to [/items] at [2020-04-23T16:13:42.148Z]
+		 */
 		return true;
 	}
 
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
 			@Nullable Exception ex) {
-		log.info(String.format(ItemStorageConstant.LOGGING_HANDLER_OUTBOUND_MSG, response.getStatus(), Instant.now()));
-		stopWatch.stop();
-		log.info(String.format(LOGGING_HANDLER_PROCESS_TIME_MSG, stopWatch.getTotalTimeMillis()));
+		/**
+		 * TODO: log response as an INFO using the format specified in ItemStorageConstant.LOGGING_HANDLER_OUTBOUND_MSG
+		 * 	example: Responded with Status [201] at [2020-04-23T16:13:42.412Z]
+		 */
+
+		/**
+		 * TODO: Stop the watch and log the total time in milliseconds
+		 * 	example: Total processing time [262] ms
+		 */
 	}
 
 }

@@ -27,24 +27,27 @@ public class ItemRepositoryTest {
 	@Sql("/delete_all.sql")
 	@Test(expected = DataIntegrityViolationException.class)
 	public void createDuplicateItemTest() {
-		itemRepository.save(Item.builder().name("my item").priceTag(BigDecimal.ONE).stock(BigInteger.ONE).build());
-		itemRepository.save(Item.builder().name("my item").priceTag(BigDecimal.ONE).stock(BigInteger.ONE).build());
+		// TODO: Complete having in mind the AAA approach
+		// Arrange - Prepare variables and mock responses
+		// Act - Behaviour to test
+		// Assert - Verify that all criterias are met
 	}
 
 	@Sql("/delete_all.sql")
 	@Test
 	public void createItemTest() {
-		Item item = itemRepository
-				.save(Item.builder().name("my item").priceTag(BigDecimal.ONE).stock(BigInteger.ONE).build());
-		assertThat(item.getName(), is("my item"));
+		// TODO: Complete having in mind the AAA approach
+		// Arrange - Prepare variables and mock responses
+		// Act - Behaviour to test
+		// Assert - Verify that all criterias are met
 	}
 
 	@Test
 	public void getItemsTest() {
-		assertThat(itemRepository.findAll().size(), is(5));
-		assertTrue(itemRepository.findAll().stream().anyMatch(i -> i.getName().equals("item 5")));
-		assertTrue(itemRepository.findAll().stream().noneMatch(i -> i.getName().equals("item 6")));
-
+		// TODO: Complete having in mind the AAA approach
+		// Arrange - Prepare variables and mock responses
+		// Act - Behaviour to test
+		// Assert - Verify that all criterias are met
 	}
 
 }
