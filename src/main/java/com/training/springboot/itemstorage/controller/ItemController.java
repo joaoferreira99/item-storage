@@ -12,6 +12,7 @@ import com.training.springboot.itemstorage.utils.annotation.ServiceOperation;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -27,19 +28,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RefreshScope
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/items")
 public class ItemController implements IItemController {
 
-	@Autowired
-	private ItemService itemService;
+	private final ItemService itemService;
 
 	/**
 	 * @JavaDoc ModelMapper is a mapping tool easily configurable to accommodate most application defined entities check
 	 * some configuration example at: http://modelmapper.org/user-manual/
 	 */
-	@Autowired
-	private ModelMapper mapper;
+	private final ModelMapper mapper;
 
 	@Override
 	@PostMapping

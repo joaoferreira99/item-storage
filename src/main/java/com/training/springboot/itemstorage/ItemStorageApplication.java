@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@EnableDiscoveryClient
+// TODO: Add annotation to enable service discovery (as a client)
 @SpringBootApplication
 public class ItemStorageApplication {
 
